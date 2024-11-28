@@ -7,6 +7,7 @@
     </v-layer>
   </v-stage>
   <vue-bottom-sheet ref="myBottomSheet" :max-height="pageHeight">
+    <h1>Image</h1>
     <button class="select-picture">
       <span>Selectionner une image</span>
       <input
@@ -16,10 +17,6 @@
         @change="selectFile"
       />
     </button>
-    <div class="tools">
-      <button class="btn" @click="reset">Réinitialiser</button>
-      <button class="btn primary" @click="getResult">Crop</button>
-    </div>
     <VuePictureCropper
       :boxStyle="{
         width: '100%',
@@ -217,6 +214,7 @@ export default {
       ;(this.$refs.myBottomSheet as VueBottomSheet).open()
     },
     closeBottomSheet() {
+      this.getResult()
       ;(this.$refs.myBottomSheet as VueBottomSheet).close()
     },
     onResize() {
@@ -363,5 +361,12 @@ export default {
 #text {
   width: 100%;
   min-height: 20vh;
+  background-color: #181a1b;
+}
+.bottom-sheet__content {
+  background-color: rgb(24, 26, 27) !important;
+}
+.vue--picture-cropper__wrap {
+  background-color: #1c1e1f !important;
 }
 </style>
