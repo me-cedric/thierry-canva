@@ -7,36 +7,38 @@
     </v-layer>
   </v-stage>
   <vue-bottom-sheet ref="myBottomSheet" :max-height="pageHeight">
-    <h1>Image</h1>
-    <button class="select-picture">
-      <span>Selectionner une image</span>
-      <input
-        ref="uploadInput"
-        type="file"
-        accept="image/jpg, image/jpeg, image/png, image/gif"
-        @change="selectFile"
+    <div class="sheet-content">
+      <h1>Image</h1>
+      <button class="select-picture">
+        <span>Selectionner une image</span>
+        <input
+          ref="uploadInput"
+          type="file"
+          accept="image/jpg, image/jpeg, image/png, image/gif"
+          @change="selectFile"
+        />
+      </button>
+      <VuePictureCropper
+        :boxStyle="{
+          width: '100%',
+          height: '30vh',
+          backgroundColor: '#f8f8f8',
+          margin: 'auto',
+        }"
+        :img="pic"
+        :options="{
+          viewMode: 1,
+          dragMode: 'crop',
+          aspectRatio: 1,
+        }"
       />
-    </button>
-    <VuePictureCropper
-      :boxStyle="{
-        width: '100%',
-        height: '30vh',
-        backgroundColor: '#f8f8f8',
-        margin: 'auto',
-      }"
-      :img="pic"
-      :options="{
-        viewMode: 1,
-        dragMode: 'crop',
-        aspectRatio: 1,
-      }"
-    />
-    <h1>Texte</h1>
-    <p>ça commence automatiquement par "Aujourd'hui il te ramène "</p>
-    <textarea name="text" id="text" rows="10" @input="updateText"></textarea>
-    <button class="select-picture" @click="closeBottomSheet">
-      <span>Valider</span>
-    </button>
+      <h1>Texte</h1>
+      <p>Ça commence automatiquement par "Aujourd'hui il te ramène ".</p>
+      <textarea name="text" id="text" rows="10" @input="updateText"></textarea>
+      <button class="select-picture" @click="closeBottomSheet">
+        <span>Valider</span>
+      </button>
+    </div>
   </vue-bottom-sheet>
   <button class="fab" @click="openBottomSheet()">
     <span class="material-symbols-outlined"> edit </span>
@@ -226,6 +228,7 @@ export default {
     closeBottomSheet() {
       this.getResult()
       ;(this.$refs.myBottomSheet as VueBottomSheet).close()
+      window.scrollTo(0, 0)
     },
     shareOnBluesky() {},
     onResize() {
@@ -394,11 +397,16 @@ export default {
   width: 100%;
   min-height: 20vh;
   background-color: #181a1b;
+  color: #ddd;
+  font-size: 20px;
 }
 .bottom-sheet__content {
   background-color: rgb(24, 26, 27) !important;
 }
 .vue--picture-cropper__wrap {
   background-color: #1c1e1f !important;
+}
+.sheet-content {
+  padding: 1em;
 }
 </style>
