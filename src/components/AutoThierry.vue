@@ -45,6 +45,7 @@
 <script lang="ts">
 import { default as img } from '@/assets/thierry-base.png'
 import { getCrop } from '@/core/helpers'
+// @ts-expect-error: missing types
 import VueBottomSheet from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
 import VuePictureCropper, { cropper } from 'vue-picture-cropper'
