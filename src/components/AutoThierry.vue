@@ -36,6 +36,9 @@
     />
     <h1>Texte</h1>
     <textarea name="text" id="text" rows="10" @input="updateText"></textarea>
+    <button class="select-picture" @click="closeBottomSheet">
+      <span>Valider</span>
+    </button>
   </vue-bottom-sheet>
   <button class="fab" @click="openBottomSheet()">
     <span class="material-symbols-outlined"> edit </span>
@@ -212,6 +215,9 @@ export default {
     },
     openBottomSheet() {
       ;(this.$refs.myBottomSheet as VueBottomSheet).open()
+    },
+    closeBottomSheet() {
+      ;(this.$refs.myBottomSheet as VueBottomSheet).close()
     },
     onResize() {
       this.stageSize.width = window.innerWidth
