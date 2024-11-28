@@ -28,6 +28,10 @@
   --vp-c-green-lighter: #35eb9a;
   --vp-c-green-dark: #33a06f;
   --vp-c-green-darker: #155f3e;
+  --vp-c-brand: var(--vp-c-green);
+  --vp-c-brand-light: var(--vp-c-green-light);
+  --vp-c-brand-lighter: var(--vp-c-green-lighter);
+  --vp-c-brand-dark: var(--vp-c-green-dark);
   --vp-c-brand-dark: var(--vp-c-green-dark);
   --vp-c-brand-light: var(--vp-c-green-light);
   --vp-c-brand-lighter: var(--vp-c-green-lighter);

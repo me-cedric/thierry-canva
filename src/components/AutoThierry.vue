@@ -32,6 +32,7 @@
       }"
     />
     <h1>Texte</h1>
+    <p>ça commence automatiquement par "Aujourd'hui il te ramène "</p>
     <textarea name="text" id="text" rows="10" @input="updateText"></textarea>
     <button class="select-picture" @click="closeBottomSheet">
       <span>Valider</span>
@@ -40,9 +41,16 @@
   <button class="fab" @click="openBottomSheet()">
     <span class="material-symbols-outlined"> edit </span>
   </button>
+  <button
+    class="fab-bluesky"
+    :href="'https://bsky.app/intent/compose?text=Check%20moi%20donc%20ce%20générateur%20de%20Thierry%20de%20fou.%20https://thierry.pornhub.alsace/'"
+  >
+    <img :src="blsky" alt="" width="30" />
+  </button>
 </template>
 
 <script lang="ts">
+import { default as blsky } from '@/assets/blsky.png'
 import { default as img } from '@/assets/thierry-base.png'
 import { getCrop } from '@/core/helpers'
 // @ts-expect-error: missing types
@@ -86,6 +94,7 @@ interface ThierryData {
     width?: number
     height?: number
   }
+  blsky: string
   img?: HTMLImageElement
   img2?: HTMLImageElement
   imgWidth?: number
@@ -136,6 +145,7 @@ export default {
         width: 810,
         height: 280,
       },
+      blsky,
       img: undefined,
       img2: undefined,
       imgWidth: undefined,
@@ -217,6 +227,7 @@ export default {
       this.getResult()
       ;(this.$refs.myBottomSheet as VueBottomSheet).close()
     },
+    shareOnBluesky() {},
     onResize() {
       this.stageSize.width = window.innerWidth
       this.stageSize.height = window.innerHeight
@@ -265,7 +276,28 @@ export default {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #007bff;
+  background-color: var(--vp-button-brand-bg);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  &:hover {
+    background-color: var(--vp-button-brand-hover-bg);
+  }
+}
+.fab-bluesky {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background-color: #3299ff;
   color: white;
   border: none;
   border-radius: 50%;
