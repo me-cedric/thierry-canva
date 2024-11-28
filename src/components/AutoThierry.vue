@@ -2,14 +2,15 @@
   <v-stage ref="stage" :config="stageSize">
     <v-layer ref="layer">
       <v-image :config="configThierry" />
-      <v-image :config="configOther" ref="otherImage" />
+      <v-image :config="configOther" />
+      <v-text :config="configText" />
     </v-layer>
   </v-stage>
 </template>
 
 <script lang="ts">
-import img from '@/assets/thierry-base.png'
-import img2 from '@/assets/thierry-base.png'
+import { default as img, default as img2 } from '@/assets/thierry-base.png'
+import { getCrop } from '@/core/helpers'
 // import img2 from '@/assets/tintin.png'
 
 let count = 0
@@ -17,30 +18,90 @@ export default {
   props: {
     path: String,
   },
-  data() {
+  data(): {
+    stageSize: {
+      width: number
+      height: number
+    }
+    configThierry: {
+      image?: HTMLImageElement
+      x?: number
+      y?: number
+      width?: number
+      height?: number
+      name?: string
+    }
+    configOther: {
+      image?: HTMLImageElement
+      x?: number
+      y?: number
+      width?: number
+      height?: number
+      name?: string
+    }
+    configText: {
+      direction?: string
+      fontFamily?: string
+      fontSize?: number
+      text?: string
+      align?: string
+      lineHeight?: number
+      fill?: string
+      x?: number
+      y?: number
+      width?: number
+      height?: number
+    }
+    img?: HTMLImageElement
+    img2?: HTMLImageElement
+    imgWidth?: number
+    imgHeight?: number
+  } {
+    const t =
+      'Aujourd’hui, il te ramène un Roboraptor pour que \ntu puisse faire la scene dans la cuisine de Jurassic \nPark entre autre chez toi. Avec son son stéréo et \nses multiples capteurs tu auras l’impression d’avoir \nun véritable petit raptor chez toi. \nEn plus c’est un cousin éloigné de Thierry.'
+    const text =
+      'Aujourd’hui, il te ramène un Roboraptor pour que tu puisse faire la scene dans la cuisine de Jurassic Park entre autre chez toi. Avec son son stéréo et ses multiples capteurs tu auras l’impression d’avoir un véritable petit raptor chez toi. En plus c’est un cousin éloigné de Thierry.'.replace(
+        /[\s\S]{1,51}(?!)/g,
+        '$&\n',
+      )
     return {
       stageSize: {
         width: window.innerWidth,
         height: window.innerHeight,
       },
       configThierry: {
-        image: null,
-        offsetX: null,
-        offsetY: null,
-        width: null,
-        height: null,
+        image: undefined,
+        x: undefined,
+        y: undefined,
+        width: undefined,
+        height: undefined,
+        name: undefined,
       },
       configOther: {
-        image: null,
-        offsetX: null,
-        offsetY: null,
-        width: null,
-        height: null,
+        image: undefined,
+        x: undefined,
+        y: undefined,
+        width: undefined,
+        height: undefined,
+        name: undefined,
       },
-      img: null,
-      img2: null,
-      imgWidth: null,
-      imgHeight: null,
+      configText: {
+        direction: 'ltr',
+        fontFamily: 'arial',
+        fontSize: 18,
+        text,
+        align: 'left',
+        lineHeight: 1.2,
+        fill: '#fff',
+        x: 170,
+        y: 1251,
+        width: 810,
+        height: 280,
+      },
+      img: undefined,
+      img2: undefined,
+      imgWidth: undefined,
+      imgHeight: undefined,
     }
   },
   created() {
@@ -74,78 +135,15 @@ export default {
     window.removeEventListener('resize', this.onResize)
   },
   methods: {
-    getCrop(image, size, clipPosition = 'center-middle') {
-      const width = size.width
-      const height = size.height
-      const aspectRatio = width / height
-
-      let newWidth
-      let newHeight
-
-      const imageRatio = image.width / image.height
-
-      if (aspectRatio >= imageRatio) {
-        newWidth = image.width
-        newHeight = image.width / aspectRatio
-      } else {
-        newWidth = image.height * aspectRatio
-        newHeight = image.height
-      }
-
-      let x = 0
-      let y = 0
-      if (clipPosition === 'left-top') {
-        x = 0
-        y = 0
-      } else if (clipPosition === 'left-middle') {
-        x = 0
-        y = (image.height - newHeight) / 2
-      } else if (clipPosition === 'left-bottom') {
-        x = 0
-        y = image.height - newHeight
-      } else if (clipPosition === 'center-top') {
-        x = (image.width - newWidth) / 2
-        y = 0
-      } else if (clipPosition === 'center-middle') {
-        x = (image.width - newWidth) / 2
-        y = (image.height - newHeight) / 2
-      } else if (clipPosition === 'center-bottom') {
-        x = (image.width - newWidth) / 2
-        y = image.height - newHeight
-      } else if (clipPosition === 'right-top') {
-        x = image.width - newWidth
-        y = 0
-      } else if (clipPosition === 'right-middle') {
-        x = image.width - newWidth
-        y = (image.height - newHeight) / 2
-      } else if (clipPosition === 'right-bottom') {
-        x = image.width - newWidth
-        y = image.height - newHeight
-      } else if (clipPosition === 'scale') {
-        x = 0
-        y = 0
-        newWidth = width
-        newHeight = height
-      } else {
-        console.error(new Error('Unknown clip position property - ' + clipPosition))
-      }
-
-      return {
-        cropX: x,
-        cropY: y,
-        cropWidth: newWidth,
-        cropHeight: newHeight,
-      }
-    },
     onResize() {
       this.stageSize.width = window.innerWidth
       this.stageSize.height = window.innerHeight
       const scale = Math.min(
-        this.stageSize.width / this.imgWidth,
-        this.stageSize.height / this.imgHeight,
+        this.stageSize.width / (this.imgWidth ?? 1),
+        this.stageSize.height / (this.imgHeight ?? 1),
       )
-      const w = this.imgWidth * scale
-      const h = this.imgHeight * scale
+      const w = (this.imgWidth ?? 0) * scale
+      const h = (this.imgHeight ?? 0) * scale
       const x = this.stageSize.width / 2 - w / 2
       const y = this.stageSize.height / 2 - h / 2
       // set image only when it is loaded
@@ -156,11 +154,6 @@ export default {
         width: w,
         height: h,
       }
-      const slotWidth = 309 * scale
-      const slotHeight = 302 * scale
-      const centerShiftX = (slotWidth - this.img2.width * scale) / 2
-      const centerShiftY = (slotHeight - this.img2.height * scale) / 2
-      const scale2 = Math.min((309 * scale) / this.img2.width, (302 * scale) / this.img2.height)
       this.configOther = {
         image: this.img2,
         x: x + 543 * scale,
@@ -168,7 +161,15 @@ export default {
         width: 309 * scale,
         height: 302 * scale,
         name: 'other',
-        ...this.getCrop(this.img2, { width: 309 * scale, height: 302 * scale }),
+        ...getCrop(this.img2!, { width: 309 * scale, height: 302 * scale }),
+      }
+      this.configText = {
+        ...this.configText,
+        fontSize: 35 * scale,
+        x: x + 170 * scale,
+        y: y + 1251 * scale,
+        width: 810 * scale,
+        height: 280 * scale,
       }
     },
   },
