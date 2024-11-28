@@ -41,14 +41,29 @@
     </div>
   </vue-bottom-sheet>
   <button class="fab" @click="openBottomSheet()">
-    <span class="material-symbols-outlined"> edit </span>
+    <span class="material-symbols-outlined">&#xe3c9;</span>
   </button>
-  <button
+  <button class="fab-save" @click="exportThierry()">
+    <span class="material-symbols-outlined">&#xf090;</span>
+  </button>
+  <a
     class="fab-bluesky"
+    target="_blank"
+    title="Share on Bluesky"
     :href="'https://bsky.app/intent/compose?text=Check%20moi%20donc%20ce%20générateur%20de%20Thierry%20de%20fou.%20https://thierry.pornhub.alsace/'"
   >
-    <img :src="blsky" alt="" width="30" />
-  </button>
+    <svg
+      width="1em"
+      height="1em"
+      fill="#fff"
+      viewBox="0 0 600 530"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="m135.72 44.03c66.496 49.921 138.02 151.14 164.28 205.46 26.262-54.316 97.782-155.54 164.28-205.46 47.98-36.021 125.72-63.892 125.72 24.795 0 17.712-10.155 148.79-16.111 170.07-20.703 73.984-96.144 92.854-163.25 81.433 117.3 19.964 147.14 86.092 82.697 152.22-122.39 125.59-175.91-31.511-189.63-71.766-2.514-7.3797-3.6904-10.832-3.7077-7.8964-0.0174-2.9357-1.1937 0.51669-3.7077 7.8964-13.714 40.255-67.233 197.36-189.63 71.766-64.444-66.128-34.605-132.26 82.697-152.22-67.108 11.421-142.55-7.4491-163.25-81.433-5.9562-21.282-16.111-152.36-16.111-170.07 0-88.687 77.742-60.816 125.72-24.795z"
+      />
+    </svg>
+  </a>
 </template>
 
 <script lang="ts">
@@ -58,6 +73,7 @@ import { getCrop } from '@/core/helpers'
 // @ts-expect-error: missing types
 import VueBottomSheet from '@webzlodimir/vue-bottom-sheet'
 import '@webzlodimir/vue-bottom-sheet/dist/style.css'
+import type { Stage } from 'konva/lib/Stage'
 import VuePictureCropper, { cropper } from 'vue-picture-cropper'
 // import img2 from '@/assets/tintin.png'
 interface ThierryData {
@@ -222,6 +238,14 @@ export default {
       this.configText.text =
         "Aujourd'hui il te ramène " + this.cropText((event.target as HTMLTextAreaElement).value)
     },
+    exportThierry() {
+      const link = document.createElement('a')
+      link.download = 'thierry.png'
+      link.href = (this.$refs.stage as Stage).getStage().toDataURL({ pixelRatio: 3 })
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    },
     openBottomSheet() {
       ;(this.$refs.myBottomSheet as VueBottomSheet).open()
     },
@@ -296,9 +320,30 @@ export default {
     background-color: var(--vp-button-brand-hover-bg);
   }
 }
+.fab-save {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  background-color: #d306e7;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  &:hover {
+    background-color: #a903b8;
+  }
+}
 .fab-bluesky {
   position: fixed;
-  bottom: 80px;
+  bottom: 160px;
   right: 20px;
   background-color: #3299ff;
   color: white;
@@ -399,6 +444,7 @@ export default {
   background-color: #181a1b;
   color: #ddd;
   font-size: 20px;
+  margin: 1em 0;
 }
 .bottom-sheet__content {
   background-color: rgb(24, 26, 27) !important;
@@ -408,5 +454,14 @@ export default {
 }
 .sheet-content {
   padding: 1em;
+  display: flex;
+  flex-direction: column;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
 }
 </style>
